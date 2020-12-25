@@ -16,6 +16,7 @@ type Model =
         State: State
         Numbers: int list
         Score: int
+        HighScore: int
         Buffer: int list
     }
 
@@ -24,6 +25,7 @@ let init() =
         State = NotStarted
         Numbers = []
         Score = 0
+        HighScore = 0
         Buffer = []
     }, Cmd.none
 
@@ -67,7 +69,8 @@ let update msg model =
             model, Cmd.ofMsg EndGame
         elif List.sum model.Buffer = 10 then
             let score = model.Score + (model.Buffer.Length - 1)
-            { model with Score = score; Buffer = [] }, Cmd.none
+            let highScore = max score model.HighScore
+            { model with Score = score; Buffer = []; HighScore = highScore }, Cmd.none
         else
             model, Cmd.none
     
@@ -134,7 +137,8 @@ let renderFinished model dispatch =
         prop.classes ["is-flex"; "is-align-items-center"; "is-flex-direction-column"]
         prop.children [
             Bulma.title "Game Over"
-            Bulma.subtitle $"Score: {model.Score}"
+            Bulma.subtitle $"Score: %d{model.Score}"
+            Bulma.subtitle $"High Score: %d{model.HighScore}"
             Bulma.button.button [
                 prop.onClick (fun _ -> dispatch StartGame)
                 prop.text "Restart"
