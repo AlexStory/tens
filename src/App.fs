@@ -79,7 +79,14 @@ let update msg model =
         | 10 -> model, Cmd.ofMsg EndGame
         | _ ->
             let r = Random().Next(1, 8)
-            { model with Numbers = List.append model.Numbers [r] }, Cmd.none
+            let count =
+                model.Numbers
+                |> List.filter (fun x -> x = r)
+                |> List.length
+            if count > 2 then
+                model, Cmd.ofMsg AddNumber
+            else 
+                { model with Numbers = List.append model.Numbers [r] }, Cmd.none
 
     | Tick -> 
         match model.State with
