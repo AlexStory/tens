@@ -82,7 +82,6 @@ let update msg model =
             { model with Numbers = List.append model.Numbers [r] }, Cmd.none
 
     | Tick -> 
-        printfn "ticked"
         match model.State with
         | Running ->
             let tick dispatch =
